@@ -47,6 +47,13 @@ function throwError(message: string): never {
     throw new Error(message)
 } 
 
+
+// Tipos literales
+type HexadecimalColor = `#${string}`;
+
+// Forma correcta
+const red: HexadecimalColor = '#f00';
+
 // Type Alias
 
 // Cuando se crean tipos personalizados se usan PascalCase
@@ -70,29 +77,105 @@ function createHeroBasic(name: string, age: number): HeroBasic {
 // Se especifica el formato que debe tener la cadena
 type HeroId = `${string}-${string}-${string}-${string}-${string}`
 
-type Hero = {
+// Union types
+
+type HeroPower = 'flying' | 'super-strength' | 'teleporting' | 'super-speed';
+
+// Interseccion types
+type HeroBasicInfo = {
+    name: string
+    age: number
+}
+
+type HeroProperties = {
     readonly id?: HeroId // propiedad de solo lectura
     name: string
     age: number
     isActive?: boolean // propiedad opcional
+    powerScale?: HeroPower
 }
+
+type Hero = HeroBasicInfo & HeroProperties;
 
 // Método para crear ids, es nativo de la web
 // crypto.randomUUID() -> 'a370760d-30e6-429c-8475-5c3e3f0aa96c'
 
-function createHero(name: string, age: number): Hero {
+function createHero(input: HeroBasicInfo): Hero {
+    const {name, age} = input
     return {
-        id: '12345-1-2-3-4',
+        // id: '12345-1-2-3-4',
+        id: crypto.randomUUID(),
         name, 
         age
     }
 }
 
+const batman: Hero = createHero({name:'Batman', age: 30});
+batman.powerScale = 'super-strength';
+
+// type index
+
+type HeroProps = {
+    isActived: boolean
+    addres: {
+        planet: string
+        city: string
+    }
+}
+
+const addressHero: HeroProps['addres'] = {
+    planet: 'Tierra',
+    city: 'Gotham'
+}
 
 
+//  Type from value
+
+const addres = {
+    planet: 'Tierra',
+    city: 'Gotham'
+}
+
+type Address = typeof addres;
+
+const addressHero2: Address = {
+    planet: 'Tierra',
+    city: 'Gotham'
+}
+
+// Type from funtion return
+
+function createAddress() {
+    return {
+        city: 'Gotham', 
+        planet: 'Tierra'
+    }
+}
+
+type Address2 = ReturnType<typeof createAddress>;
 
 
+// Array
+
+const languages: string[] = ['JavaScript', 'TypeScript', 'Python'];
 
 
+// Tipo multiple
+const languages2: (string | number) [] = []
 
+languages2.push('JavaScript')
+languages2.push(1)
 
+type Cellvalue = 'X' | '0' | '';
+
+type GameBoard = [
+    [Cellvalue, Cellvalue, Cellvalue],
+    [Cellvalue, Cellvalue, Cellvalue],
+    [Cellvalue, Cellvalue, Cellvalue],
+]
+
+const board: GameBoard = [
+    ['', 'X', '0'],
+    ['', 'X', '0'],
+    ['', 'X', '0'],
+]
